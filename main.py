@@ -24,6 +24,12 @@ python_job_elements = [
     h2_element.parent.parent.parent for h2_element in python_jobs
 ]
 
+element_names = ['title', 'link', 'company', 'location']
+file = open('jobs4Project.csv', 'a', newline='', encoding='utf-8')
+writer = csv.writer(file)
+writer.writerow(element_names)
+file.close()
+
 for job_element in python_job_elements:
     title = job_element.find("h2", class_="title")
     company = job_element.find("h3", class_="company")
@@ -35,14 +41,8 @@ for job_element in python_job_elements:
     company_element = company.text.strip()
     location_element = location.text.strip()
 
-    file = open('Jobs4Project.csv', 'a', newline='', encoding='utf-8')
+    file = open('jobs4Project.csv', 'a', newline='', encoding='utf-8')
     writer = csv.writer(file)
     fieldnames = ([title_element, link_url, company_element, location_element])
     writer.writerow(fieldnames)
     file.close()
-
-with open('Jobs4Project.csv', 'r') as read_obj:
-    csv_reader = csv.reader(read_obj)
-    list_of_data = list(csv_reader)
-    print(list_of_data)
-
