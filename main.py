@@ -1,16 +1,41 @@
-# This is a sample Python script.
+from bs4 import BeautifulSoup
+import requests as requests
+import csv
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+URL = "https://realpython.github.io/fake-jobs/"
+page = requests.get(URL)
+
+# print(page.text)
+
+soup = BeautifulSoup(page.content, "html.parser")
+
+results = soup.find(id="ResultsContainer")
+
+# print(results.prettify())
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+job_elements = results.find_all("div", class_="card-content")
 
+python_jobs = results.find_all(
+    "h2", string=lambda text: "python" in text.lower())
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
+python_job_elements = [
+    h2_element.parent.parent.parent for h2_element in python_jobs
+]
 
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+for job_element in python_job_elements:
+    title = job_element.find("h2", class_="title")
+    company = job_element.find("h3", class_="company")
+    location = job_element.find("p", class_="location")
+    links = job_element.find_all("a")
+    for link in links:
+        link_url = link["href"]
+    title_element = title.text.strip()
+    company_element = company.text.strip()
+    location_element = location.text.strip()
+
+    file = open('Jobs4Project.cvs', 'a', newline='', encoding='utf-8')
+    writer = csv.writer(file)
+    fieldnames = ([title_element, link_url, company_element, location_element])
+    writer.writerow(fieldnames)
+    file.close()
