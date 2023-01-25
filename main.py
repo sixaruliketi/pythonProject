@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests as requests
 import csv
+from neo4j import GraphDatabase
 
 URL = "https://realpython.github.io/fake-jobs/"
 page = requests.get(URL)
@@ -34,8 +35,14 @@ for job_element in python_job_elements:
     company_element = company.text.strip()
     location_element = location.text.strip()
 
-    file = open('Jobs4Project.cvs', 'a', newline='', encoding='utf-8')
+    file = open('Jobs4Project.csv', 'a', newline='', encoding='utf-8')
     writer = csv.writer(file)
     fieldnames = ([title_element, link_url, company_element, location_element])
     writer.writerow(fieldnames)
     file.close()
+
+with open('Jobs4Project.csv', 'r') as read_obj:
+    csv_reader = csv.reader(read_obj)
+    list_of_data = list(csv_reader)
+    print(list_of_data)
+
